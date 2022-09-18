@@ -5,9 +5,10 @@ import models.player.Player;
 
 public class TwinSwords {
 
-    public static final String itemDescription = "25 points if the player reaches level 18.";
+    public static final String itemDescription = "10 points for each doublekill the player makes.";
 
     public static double getPoints(Game game, Player player) {
-        return player.stats().specificStats().fancyStats().champLevel() == 18 ? 25 : 0;
+        return player.stats().specificStats().multiKills().doubleKills() * 10;
     }
+
 }

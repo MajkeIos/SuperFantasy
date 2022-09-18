@@ -15,4 +15,5 @@ public class ImmortalBreastplate {
         }
         return player.stats().kdaFarmWards().kda().deaths() == minDeathNumber ? 14 : 0;
     }
+
 }

@@ -15,4 +15,5 @@ public class SoulHunter {
         }
         return player.stats().specificStats().challenges().soloKills() == maxSolokills ? 15 : 0;
     }
+
 }

@@ -15,4 +15,5 @@ public class TheUndertaker {
         }
         return player.stats().specificStats().fancyStats().largestKillingSpree() == maxKillingStreak ? 14 : 0;
     }
+
 }

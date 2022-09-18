@@ -10,4 +10,5 @@ public class SwordsOfDarkness {
     public static double getPoints(Game game, Player player) {
         return player.stats().specificStats().multiKills().doubleKills() > 0 ? 15 : 0;
     }
+
 }

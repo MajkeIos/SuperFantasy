@@ -15,4 +15,5 @@ public class ArcaneAdrenaline {
         }
         return player.stats().damage().championDamage().magicDamageDealtToChampions() == maxMagicDamage ? 16 : 0;
     }
+
 }

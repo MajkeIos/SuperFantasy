@@ -10,4 +10,5 @@ public class SavageLooter {
     public static double getPoints(Game game, Player player) {
         return -1;
     }
+
 }

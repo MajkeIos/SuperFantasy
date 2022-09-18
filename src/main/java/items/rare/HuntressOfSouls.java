@@ -15,4 +15,5 @@ public class HuntressOfSouls {
         }
         return player.stats().kdaFarmWards().farmStats().totalMinionsKilled() == maxMinionKilled ? 19 : 0;
     }
+
 }

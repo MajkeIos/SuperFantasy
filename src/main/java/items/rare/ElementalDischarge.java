@@ -15,4 +15,5 @@ public class ElementalDischarge {
         }
         return player.stats().damage().neutralDamage().damageDealtToObjectives() == maxObjectiveDamage ? 18 : 0;
     }
+
 }

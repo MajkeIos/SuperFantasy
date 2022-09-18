@@ -15,4 +15,5 @@ public class SpiritOfTheWarrior {
         }
         return player.stats().damage().championDamage().physicalDamageDealtToChampions() == maxPhysicalDamage ? 16 : 0;
     }
+
 }

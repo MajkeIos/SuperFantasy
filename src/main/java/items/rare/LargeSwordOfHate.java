@@ -15,4 +15,5 @@ public class LargeSwordOfHate {
         }
         return player.stats().damage().championDamage().totalDamageDealtToChampions() == maxChampionDamage ? 20 : 0;
     }
+
 }

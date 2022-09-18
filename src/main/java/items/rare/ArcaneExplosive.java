@@ -10,4 +10,5 @@ public class ArcaneExplosive {
     public static double getPoints(Game game, Player player) {
         return player.stats().damage().neutralDamage().damageDealtToTurrets() >= 4500 ? 12 : 0;
     }
+
 }

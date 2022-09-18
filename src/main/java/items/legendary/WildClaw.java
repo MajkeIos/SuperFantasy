@@ -10,4 +10,5 @@ public class WildClaw {
     public static double getPoints(Game game, Player player) {
         return player.stats().kdaFarmWards().farmStats().neutralMinionsKilled() / 8.0;
     }
+
 }

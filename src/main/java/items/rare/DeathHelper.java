@@ -10,4 +10,5 @@ public class DeathHelper {
     public static double getPoints(Game game, Player player) {
         return player.stats().kdaFarmWards().kda().assists() >= 8 ? 10 : 0;
     }
+
 }

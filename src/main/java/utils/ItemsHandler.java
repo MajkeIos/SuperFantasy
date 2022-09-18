@@ -1,8 +1,10 @@
 package utils;
 
-import items.*;
+import items.ItemFormula;
+import items.common.*;
 import items.epic.*;
 import items.legendary.*;
+import items.rare.*;
 import models.Game;
 import models.player.Player;
 
@@ -42,11 +44,49 @@ public class ItemsHandler {
     }};
 
     private static final HashMap<String, ItemFormula> rareItems = new HashMap<>() {{
-//        put("", ::getPoints);
+        put("Accurate Sword", AccurateSword::getPoints);
+        put("Arcane Adrenaline", ArcaneAdrenaline::getPoints);
+        put("Arcane Explosive", ArcaneExplosive::getPoints);
+        put("Being Of Light", BeingOfLight::getPoints);
+        put("Dance Of Death", DanceOfDeath::getPoints);
+        put("Death Helper", DeathHelper::getPoints);
+        put("Demon Claws", DemonClaws::getPoints);
+        put("Elemental Discharge", ElementalDischarge::getPoints);
+        put("Huntress Of Souls", HuntressOfSouls::getPoints);
+        put("Immortal Breastplate", ImmortalBreastplate::getPoints);
+        put("Large Sword Of Hate", LargeSwordOfHate::getPoints);
+        put("Precise Hammer", PreciseHammer::getPoints);
+        put("Rock Tomb", RockTomb::getPoints);
+        put("Savage Looter", SavageLooter::getPoints);
+        put("Soul Hunter", SoulHunter::getPoints);
+        put("Spirit Of The Warrior", SpiritOfTheWarrior::getPoints);
+        put("Swords Of Darkness", SwordsOfDarkness::getPoints);
+        put("The Undertaker", TheUndertaker::getPoints);
+        put("Twin Swords", TwinSwords::getPoints);
+        put("Unstoppable Lightning", UnstoppableLightning::getPoints);
+        put("Versatil Saber", VersatilSaber::getPoints);
     }};
 
     private static final HashMap<String, ItemFormula> commonItems = new HashMap<>() {{
-//        put("", ::getPoints);
+        put("Colossal Mace", ColossalMace::getPoints);
+        put("Crown Of The Dwarf King", CrownOfTheDwarfKing::getPoints);
+        put("Divine Impetu", DivineImpetu::getPoints);
+        put("Dual Spear", DualSpear::getPoints);
+        put("Earthly Staff", EarthlyStaff::getPoints);
+        put("Evasive Protection", EvasiveProtection::getPoints);
+        put("Final Asteroid", FinalAsteroid::getPoints);
+        put("Hawk's Eye", HawksEye::getPoints);
+        put("Holy Sword", HolySword::getPoints);
+        put("Magnetic Disintegrator", MagneticDisintegrator::getPoints);
+        put("Meteorites", Meteorites::getPoints);
+        put("Omnipresent Amulet", OmnipresentAmulet::getPoints);
+        put("Royal Destroyer", RoyalDestroyer::getPoints);
+        put("Siege Mace", SiegeMace::getPoints);
+        put("Staff Of Conquered Worlds", StaffOfConqueredWorlds::getPoints);
+        put("Thirsty Dagger", ThirstyDagger::getPoints);
+        put("Trimeteor", Trimeteor::getPoints);
+        put("Triple Spear", TripleSpear::getPoints);
+        put("Wild Spirit", WildSpirit::getPoints);
     }};
 
     public static HashMap<String, ItemFormula> getLegendaryItems() {

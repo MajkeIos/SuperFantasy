@@ -10,4 +10,5 @@ public class RockTomb {
     public static double getPoints(Game game, Player player) {
         return player.stats().damage().neutralDamage().damageDealtToObjectives() >= 15500 ? 10 : 0;
     }
+
 }

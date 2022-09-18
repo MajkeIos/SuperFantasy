@@ -15,4 +15,5 @@ public class BeingOfLight {
         }
         return player.stats().specificStats().fancyStats().totalHeal() == maxHealingNumber ? 18 : 0;
     }
+
 }

@@ -15,4 +15,5 @@ public class AccurateSword {
         }
         return player.stats().specificStats().fancyStats().largestCriticalStrike() == maxCriticalStrike ? 16 : 0;
     }
+
 }

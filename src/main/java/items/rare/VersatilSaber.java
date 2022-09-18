@@ -5,9 +5,10 @@ import models.player.Player;
 
 public class VersatilSaber {
 
-    public static final String itemDescription = "25 points if the player reaches level 18.";
+    public static final String itemDescription = "11 points if the player gets a KDA of 6 or greater.";
 
     public static double getPoints(Game game, Player player) {
-        return player.stats().specificStats().fancyStats().champLevel() == 18 ? 25 : 0;
+        return player.stats().kdaFarmWards().kda().getKda() >= 6 ? 11 : 0;
     }
+
 }

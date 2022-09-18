@@ -15,4 +15,5 @@ public class PreciseHammer {
         }
         return player.stats().specificStats().challenges().turretPlatesTaken() == maxTurretPlatings ? 18 : 0;
     }
+
 }

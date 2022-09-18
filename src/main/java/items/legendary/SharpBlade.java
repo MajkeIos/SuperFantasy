@@ -10,4 +10,5 @@ public class SharpBlade {
     public static double getPoints(Game game, Player player) {
         return player.stats().kdaFarmWards().kda().kills() * 3;
     }
+
 }

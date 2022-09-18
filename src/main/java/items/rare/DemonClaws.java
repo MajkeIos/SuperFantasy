@@ -16,4 +16,5 @@ public class DemonClaws {
         }
         return player.stats().kdaFarmWards().farmStats().totalMinionsKilled() == maxMinionKilled ? 17 : 0;
     }
+
 }

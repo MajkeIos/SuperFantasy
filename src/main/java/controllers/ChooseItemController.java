@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import utils.ItemsHandler;
 
 import java.io.IOException;
@@ -42,8 +43,9 @@ public class ChooseItemController implements Initializable {
 
     public void save(ActionEvent e) throws IOException {
         clickedButton.setText(itemChoiceBox.getValue());
-        itemTypeNotChosen();
         chooseRosterController.updateCost();
+        Stage stage = (Stage) saveButton.getScene().getWindow();
+        stage.close();
     }
 
     private void itemTypeChosen(ActionEvent e) {

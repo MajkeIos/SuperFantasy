@@ -1,20 +1,20 @@
+import database.DatabaseConnection;
 import javafx.application.Application;
-import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
+import java.sql.SQLException;
 import java.util.Objects;
 
 public class Main extends Application {
 
-    public static void main(String[] args) {
-//        StatisticsHandler.legendaryItemsRank("G2 Jankos").forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));
-//        System.out.println("\n");
-//        StatisticsHandler.epicItemsRank("G2 Jankos").forEach(e -> System.out.println(e.getKey() + ": " + e.getValue()));
+    public static void main(String[] args) throws SQLException {
         launch(args);
     }
 
@@ -24,7 +24,21 @@ public class Main extends Application {
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
-        primaryStage.setOnCloseRequest(Event::consume);
+        primaryStage.setOnCloseRequest(e -> {
+            Alert quitAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            quitAlert.setTitle("Logout");
+            quitAlert.setHeaderText("Are you sure you want to quit?");
+            if (quitAlert.showAndWait().get() == ButtonType.OK) {
+                try {
+                    DatabaseConnection.disconnect();
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+                primaryStage.close();
+            } else {
+                e.consume();
+            }
+        });
 
         Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
         primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2);

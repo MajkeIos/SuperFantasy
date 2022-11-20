@@ -5,20 +5,20 @@ import models.Game;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GamesHandler {
+public class AllGamesHandler {
 
     private final List<Game> games;
-    private static GamesHandler gamesHandler;
+    private static AllGamesHandler allGamesHandler;
 
-    private GamesHandler() {
+    private AllGamesHandler() {
         games = new ArrayList<>();
         updateGames();
     }
 
-    public static GamesHandler getInstance() {
-        if (gamesHandler == null)
-            return new GamesHandler();
-        return gamesHandler;
+    public static AllGamesHandler getInstance() {
+        if (allGamesHandler == null)
+            return new AllGamesHandler();
+        return allGamesHandler;
     }
 
     public List<Game> getGames() {

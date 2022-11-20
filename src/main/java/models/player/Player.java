@@ -22,4 +22,12 @@ public record Player(Stats stats, String summonerName) {
         }
         return null;
     }
+
+    public int getPlayerPoints() {
+        int points = 0;
+        points += stats.kdaFarmWards().kda().kills() * 5;
+        points -= stats.kdaFarmWards().kda().deaths() * 3;
+        points += stats.kdaFarmWards().kda().assists() * 2;
+        return points;
+    }
 }

@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS settings;
+DROP TABLE IF EXISTS chosen_item_sets;
+DROP TABLE IF EXISTS chosen_rosters;
+DROP TABLE IF EXISTS items;
+DROP TABLE IF EXISTS players;
+DROP TABLE IF EXISTS teams;
+DROP TABLE IF EXISTS users;
+
+DROP SEQUENCE IF EXISTS chosen_rosters_id;
+DROP SEQUENCE IF EXISTS chosen_item_sets_id;

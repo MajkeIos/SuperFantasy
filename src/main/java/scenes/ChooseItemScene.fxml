@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="500.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ChooseItemController">
+   <children>
+      <ChoiceBox fx:id="itemChoiceBox" layoutX="56.0" layoutY="163.0" prefHeight="23.0" prefWidth="188.0" />
+      <Text layoutY="50.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose item type:" textAlignment="CENTER" wrappingWidth="300.0">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <ChoiceBox fx:id="itemTypeChoiceBox" layoutX="56.0" layoutY="73.0" prefHeight="23.0" prefWidth="188.0" />
+      <Text fx:id="chooseItemText" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Choose item:" textAlignment="CENTER" wrappingWidth="300.0">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <Text fx:id="itemDescriptionText" layoutY="230.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Item description:" textAlignment="CENTER" wrappingWidth="300.0">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Text>
+      <Label fx:id="itemDescriptionLabel" layoutX="57.0" layoutY="250.0" prefHeight="136.0" prefWidth="188.0" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font name="System Italic" size="18.0" />
+         </font>
+      </Label>
+      <Button fx:id="saveButton" layoutX="95.0" layoutY="409.0" mnemonicParsing="false" onAction="#save" prefHeight="64.0" prefWidth="111.0" text="SAVE">
+         <font>
+            <Font name="System Bold" size="25.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

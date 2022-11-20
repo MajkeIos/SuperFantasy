@@ -1,14 +1,16 @@
 package controllers;
 
-import database.UsersHandler;
+import database.tablesHandlers.UsersHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -24,21 +26,18 @@ public class RegisterController {
     private PasswordField confirmPasswordField;
 
     public void register(ActionEvent e) throws IOException {
-        if (usernameField.getText().equals("") || passwordField.getText().equals("")
-                || confirmPasswordField.getText().equals("")) {
-            System.out.println("Some field is empty");
-            //TODO
+        if (usernameField.getText().equals("")) {
+            AlertBoxController.displayAlert("You haven't chosen username!");
+        } else if (UsersHandler.getUser(usernameField.getText()) != null) {
+            AlertBoxController.displayAlert("User " + usernameField.getText() + " already exists!");
+        } else if (passwordField.getText().equals("")) {
+            AlertBoxController.displayAlert("You haven't chosen password!");
         } else if (!passwordField.getText().equals(confirmPasswordField.getText())) {
-            System.out.println("Different passwords");
-            //TODO
-        } else if (UsersHandler.checkIfUserExists(usernameField.getText())) {
-            System.out.println("User already exists!");
-            //TODO
-        } else {
+            AlertBoxController.displayAlert("Your given passwords don't match");
+        }  else {
             UsersHandler.addUser(usernameField.getText(), passwordField.getText());
-            usernameField.setText("");
-            passwordField.setText("");
-            confirmPasswordField.setText("");
+            AlertBoxController.displayAlert("You have successfully registered!");
+            clearData();
         }
     }
 
@@ -47,10 +46,20 @@ public class RegisterController {
         loadScene(e, root);
     }
 
+    private void clearData() {
+        usernameField.setText("");
+        passwordField.setText("");
+        confirmPasswordField.setText("");
+    }
+
     private void loadScene(ActionEvent e, Parent root) {
         Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+
+        Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 2);
+        stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);
     }
 }

@@ -12,35 +12,28 @@ import java.util.HashMap;
 
 public class ItemsHandler {
 
-    private static final HashMap<String, ItemFormula> legendaryItems = new HashMap<>() {{
-       put("Divine Ascent", DivineAscent::getPoints);
-       put("Guardian Totem", GuardianTotem::getPoints);
-       put("Incapacitor", Incapacitor::getPoints);
-       put("Legend Aura", Scythe::getPoints);
-       put("Scythe", Scythe::getPoints);
-       put("Sharp Blade", SharpBlade::getPoints);
-       put("Spirit Of The Squire", SpiritOfTheSquire::getPoints);
-       put("The Stalker", TheStalker::getPoints);
-       put("Thirsty Scythes", ThirstyScythes::getPoints);
-       put("Wild Claw", WildClaw::getPoints);
-    }};
+    public static final String[] itemTypes = { "common", "rare", "epic", "legendary"};
 
-    private static final HashMap<String, ItemFormula> epicItems = new HashMap<>() {{
-        put("Beast Hunter", BeastHunter::getPoints);
-        put("Berseker Ax", BersekerAx::getPoints);
-        put("Bloody Instinct", BloodyInstinct::getPoints);
-        put("Conquering Staff", ConqueringStaff::getPoints);
-        put("Fast Furious Blade", FastFuriousBlade::getPoints);
-        put("Heavenly Vision", HeavenlyVision::getPoints);
-        put("Obsidian Battle Plate", ObsidianBattlePlate::getPoints);
-        put("Omnipresent Spirit", OmnipresentSpirit::getPoints);
-        put("Rampage Momentum", RampageMomentum::getPoints);
-        put("Sacred Help", SacredHelp::getPoints);
-        put("Secret Scroll", SecretScroll::getPoints);
-        put("Steel Aura", SteelAura::getPoints);
-        put("The Puppeteer", ThePuppeteer::getPoints);
-        put("The Visionary", TheVisionary::getPoints);
-        put("Treasurer's Wisdom", TreasurersWisdom::getPoints);
+    private static final HashMap<String, ItemFormula> commonItems = new HashMap<>() {{
+        put("Colossal Mace", ColossalMace::getPoints);
+        put("Crown Of The Dwarf King", CrownOfTheDwarfKing::getPoints);
+        put("Divine Impetu", DivineImpetu::getPoints);
+        put("Dual Spear", DualSpear::getPoints);
+        put("Earthly Staff", EarthlyStaff::getPoints);
+        put("Evasive Protection", EvasiveProtection::getPoints);
+        put("Final Asteroid", FinalAsteroid::getPoints);
+        put("Hawk's Eye", HawksEye::getPoints);
+        put("Holy Sword", HolySword::getPoints);
+        put("Magnetic Disintegrator", MagneticDisintegrator::getPoints);
+        put("Meteorites", Meteorites::getPoints);
+        put("Omnipresent Amulet", OmnipresentAmulet::getPoints);
+        put("Royal Destroyer", RoyalDestroyer::getPoints);
+        put("Siege Mace", SiegeMace::getPoints);
+        put("Staff Of Conquered Worlds", StaffOfConqueredWorlds::getPoints);
+        put("Thirsty Dagger", ThirstyDagger::getPoints);
+        put("Trimeteor", Trimeteor::getPoints);
+        put("Triple Spear", TripleSpear::getPoints);
+        put("Wild Spirit", WildSpirit::getPoints);
     }};
 
     private static final HashMap<String, ItemFormula> rareItems = new HashMap<>() {{
@@ -67,48 +60,76 @@ public class ItemsHandler {
         put("Versatil Saber", VersatilSaber::getPoints);
     }};
 
-    private static final HashMap<String, ItemFormula> commonItems = new HashMap<>() {{
-        put("Colossal Mace", ColossalMace::getPoints);
-        put("Crown Of The Dwarf King", CrownOfTheDwarfKing::getPoints);
-        put("Divine Impetu", DivineImpetu::getPoints);
-        put("Dual Spear", DualSpear::getPoints);
-        put("Earthly Staff", EarthlyStaff::getPoints);
-        put("Evasive Protection", EvasiveProtection::getPoints);
-        put("Final Asteroid", FinalAsteroid::getPoints);
-        put("Hawk's Eye", HawksEye::getPoints);
-        put("Holy Sword", HolySword::getPoints);
-        put("Magnetic Disintegrator", MagneticDisintegrator::getPoints);
-        put("Meteorites", Meteorites::getPoints);
-        put("Omnipresent Amulet", OmnipresentAmulet::getPoints);
-        put("Royal Destroyer", RoyalDestroyer::getPoints);
-        put("Siege Mace", SiegeMace::getPoints);
-        put("Staff Of Conquered Worlds", StaffOfConqueredWorlds::getPoints);
-        put("Thirsty Dagger", ThirstyDagger::getPoints);
-        put("Trimeteor", Trimeteor::getPoints);
-        put("Triple Spear", TripleSpear::getPoints);
-        put("Wild Spirit", WildSpirit::getPoints);
+    private static final HashMap<String, ItemFormula> epicItems = new HashMap<>() {{
+        put("Beast Hunter", BeastHunter::getPoints);
+        put("Berseker Ax", BersekerAx::getPoints);
+        put("Bloody Instinct", BloodyInstinct::getPoints);
+        put("Conquering Staff", ConqueringStaff::getPoints);
+        put("Fast Furious Blade", FastFuriousBlade::getPoints);
+        put("Heavenly Vision", HeavenlyVision::getPoints);
+        put("Obsidian Battle Plate", ObsidianBattlePlate::getPoints);
+        put("Omnipresent Spirit", OmnipresentSpirit::getPoints);
+        put("Rampage Momentum", RampageMomentum::getPoints);
+        put("Sacred Help", SacredHelp::getPoints);
+        put("Secret Scroll", SecretScroll::getPoints);
+        put("Steel Aura", SteelAura::getPoints);
+        put("The Puppeteer", ThePuppeteer::getPoints);
+        put("The Visionary", TheVisionary::getPoints);
+        put("Treasurer's Wisdom", TreasurersWisdom::getPoints);
     }};
 
-    public static HashMap<String, ItemFormula> getLegendaryItems() {
-        return legendaryItems;
-    }
+    private static final HashMap<String, ItemFormula> legendaryItems = new HashMap<>() {{
+       put("Divine Ascent", DivineAscent::getPoints);
+       put("Guardian Totem", GuardianTotem::getPoints);
+       put("Incapacitor", Incapacitor::getPoints);
+       put("Legend Aura", Scythe::getPoints);
+       put("Scythe", Scythe::getPoints);
+       put("Sharp Blade", SharpBlade::getPoints);
+       put("Spirit Of The Squire", SpiritOfTheSquire::getPoints);
+       put("The Stalker", TheStalker::getPoints);
+       put("Thirsty Scythes", ThirstyScythes::getPoints);
+       put("Wild Claw", WildClaw::getPoints);
+    }};
 
-    public static HashMap<String, ItemFormula> getEpicItems() {
-        return epicItems;
-    }
+    private static final HashMap<String, ItemFormula> allItems = new HashMap<>();
 
-    public static HashMap<String, ItemFormula> getRareItems() {
-        return rareItems;
+    static {
+        allItems.putAll(commonItems);
+        allItems.putAll(rareItems);
+        allItems.putAll(epicItems);
+        allItems.putAll(legendaryItems);
     }
 
     public static HashMap<String, ItemFormula> getCommonItems() {
         return commonItems;
     }
 
-    public static double getItemPoints(String itemName, String summonerName) {
+    public static HashMap<String, ItemFormula> getRareItems() {
+        return rareItems;
+    }
+
+    public static HashMap<String, ItemFormula> getEpicItems() {
+        return epicItems;
+    }
+
+    public static HashMap<String, ItemFormula> getLegendaryItems() {
+        return legendaryItems;
+    }
+
+    public static HashMap<String, ItemFormula> getAllItems() {
+        return allItems;
+    }
+
+    public static int getItemPointsFromGame(String itemName, String summonerName, Game game) {
+        ItemFormula itemFormula = getItemFormula(itemName);
+        Player player = game.getPlayer(summonerName);
+        return (int) itemFormula.getPoints(game, player);
+    }
+
+    public static double getItemPointsFromAllGames(String itemName, String summonerName) {
         double itemPoints = 0;
         ItemFormula itemFormula = getItemFormula(itemName);
-        for (Game game : GamesHandler.getInstance().getGames()) {
+        for (Game game : AllGamesHandler.getInstance().getGames()) {
             if (game.hasPlayer(summonerName)) {
                 Player player = game.getPlayer(summonerName);
                 itemPoints += itemFormula.getPoints(game, player);
@@ -117,19 +138,14 @@ public class ItemsHandler {
         return itemPoints;
     }
 
-    public static double getAverageItemPoints(String itemName, String summonerName) {
-        double itemPoints = ItemsHandler.getItemPoints(itemName, summonerName);
-        double gamesPlayed = GamesHandler.getInstance().countPlayerGames(summonerName);
+    public static double getAverageItemPointsFromAllGames(String itemName, String summonerName) {
+        double itemPoints = ItemsHandler.getItemPointsFromAllGames(itemName, summonerName);
+        double gamesPlayed = AllGamesHandler.getInstance().countPlayerGames(summonerName);
         return itemPoints / gamesPlayed;
     }
 
     private static ItemFormula getItemFormula(String itemName) {
-        HashMap<String, ItemFormula> tmpMap = new HashMap<>();
-        tmpMap.putAll(legendaryItems);
-        tmpMap.putAll(epicItems);
-        tmpMap.putAll(rareItems);
-        tmpMap.putAll(commonItems);
-        return tmpMap.get(itemName);
+        return allItems.get(itemName);
     }
 
 }

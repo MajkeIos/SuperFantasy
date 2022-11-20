@@ -15,12 +15,12 @@ public class FileHandler {
 
     public static final String folderPathname = "src/data/";
 
-    public static Game readGameFromFile(String filename) throws Exception {
-        File file = new File(filename);
+    public static Game readGameFromFile(String pathToFile) throws Exception {
+        File file = new File(pathToFile);
         if (!file.exists()) {
-            throw new Exception("No such file: " + filename);
+            throw new Exception("No such file: " + pathToFile);
         }
-        return Game.deserialize(new JSONObject(Files.readString(Path.of(filename))));
+        return Game.deserialize(new JSONObject(Files.readString(Path.of(pathToFile))));
     }
 
     public static List<String> getAllFiles(String pathname) {

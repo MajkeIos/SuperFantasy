@@ -8,12 +8,12 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import models.items.Item;
 import utils.ItemsHandler;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class ChooseItemController implements Initializable {
 
@@ -41,7 +41,7 @@ public class ChooseItemController implements Initializable {
         itemTypeNotChosen();
     }
 
-    public void save(ActionEvent e) throws IOException {
+    public void save(ActionEvent e) {
         clickedButton.setText(itemChoiceBox.getValue());
         chooseRosterController.updateCost();
         Stage stage = (Stage) saveButton.getScene().getWindow();
@@ -50,14 +50,15 @@ public class ChooseItemController implements Initializable {
 
     private void itemTypeChosen(ActionEvent e) {
         itemChoiceBox.getItems().removeAll(itemChoiceBox.getItems());
-        itemChoiceBox.getItems().addAll(Objects.requireNonNull(database.tablesHandlers.ItemsHandler.getItems(itemTypeChoiceBox.getValue())));
+        itemChoiceBox.getItems().addAll(Objects.requireNonNull(ItemsHandler.getItems(itemTypeChoiceBox.getValue())).keySet().stream().toList());
         chooseItemText.setVisible(true);
         itemChoiceBox.setVisible(true);
         itemNotChosen();
     }
 
     private void itemChosen(ActionEvent e) {
-        itemDescriptionLabel.setText(database.tablesHandlers.ItemsHandler.getItemDescription(itemChoiceBox.getValue()));
+        Map<String, ? extends Item> items = ItemsHandler.getItems(itemTypeChoiceBox.getValue());
+        itemDescriptionLabel.setText(items.get(itemChoiceBox.getValue()).getItemDescription());
         saveButton.setVisible(true);
         itemDescriptionText.setVisible(true);
         itemDescriptionLabel.setVisible(true);

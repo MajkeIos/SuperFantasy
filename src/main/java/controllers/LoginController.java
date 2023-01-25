@@ -1,6 +1,5 @@
 package controllers;
 
-import database.tablesHandlers.UsersHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,9 +11,10 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import models.User;
+import utils.UsersHandler;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
 
@@ -29,18 +29,18 @@ public class LoginController {
     public void login(ActionEvent e) throws IOException, SQLException {
         if (usernameField.getText().equals("")) {
             AlertBoxController.displayAlert("You haven't entered your username!");
-        } else if (UsersHandler.getUser(usernameField.getText()) == null) {
+        } else if (UsersHandler.getInstance().getUser(usernameField.getText()) == null) {
             AlertBoxController.displayAlert("User " + usernameField.getText() + " doesn't exist!");
         } else if (passwordField.getText().equals("")) {
             AlertBoxController.displayAlert("You haven't entered your password!");
         } else {
-            ResultSet user = UsersHandler.getUser(usernameField.getText());
+            User user = utils.UsersHandler.getInstance().getUser(usernameField.getText());
             if (user == null) return;
-            if (!user.getString("password").equals(passwordField.getText())) {
+            if (!user.getPassword().equals(passwordField.getText())) {
                 AlertBoxController.displayAlert("You have entered wrong password!");
                 return;
             }
-            if (user.getBoolean("is_admin")) {
+            if (user.getAdminPrivileges()) {
                 root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/scenes/AdminScene.fxml")));
             } else {
                 ChooseRosterController.currentUser = usernameField.getText();

@@ -1,0 +1,6 @@
+{
+  "maxPlayerItemCopies": 1,
+  "maxSameTeamPlayers": 2,
+  "maxRosterCost": 15,
+  "minPlayersChosen": 5
+}

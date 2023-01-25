@@ -1,0 +1,14 @@
+{"users": [
+  {
+    "password": "admin",
+    "adminPrivileges": true,
+    "username": "ADMIN",
+    "points": 0
+  },
+  {
+    "password": "password1",
+    "adminPrivileges": false,
+    "username": "user1",
+    "points": 78
+  }
+]}

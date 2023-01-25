@@ -1,9 +1,5 @@
 package controllers;
 
-import database.tablesHandlers.ChosenItemSetsHandler;
-import database.tablesHandlers.ChosenRostersHandler;
-import database.tablesHandlers.SettingsHandler;
-import database.tablesHandlers.UsersHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,12 +13,11 @@ import javafx.scene.control.TextField;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import models.Game;
+import models.Roster;
 import models.player.Player;
-import utils.ItemsHandler;
-import utils.WeeksHandler;
+import utils.*;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,26 +33,25 @@ public class AdminController {
     private Parent root;
 
     public void getRostersPoints(ActionEvent e) throws SQLException, IOException {
-        ResultSet rosters = ChosenRostersHandler.getAllRosters();
+        Map<String, Roster> rosters = RostersHandler.getInstance().getRosters();
         if (rosters == null) {
             AlertBoxController.displayAlert("There are no rosters to calculate!");
             return;
         }
         WeeksHandler weeksHandler = new WeeksHandler(gamesPathField.getText());
         List<Game> gamesPlayed = weeksHandler.getGames();
-        do {
-            int rosterPoints = getRosterPoints(rosters, gamesPlayed);
-            UsersHandler.addPointsToUser(rosters.getString("username"), rosterPoints);
-            ChosenItemSetsHandler.removeItemSet(rosters.getInt("roster_id"));
-            ChosenRostersHandler.removeRoster(rosters.getInt("roster_id"));
-        } while (rosters.next());
+        rosters.forEach((rosterOwner, roster) -> {
+            int rosterPoints = getRosterPoints(roster, gamesPlayed);
+            UsersHandler.getInstance().addPointsToUser(rosterOwner, rosterPoints);
+            RostersHandler.getInstance().removeRoster(rosterOwner);
+        });
         gamesPathField.setText("");
         AlertBoxController.displayAlert("Roster points successfully calculated!");
     }
 
     public void updateRostersCost(ActionEvent e) throws IOException {
         int newRosterCost = Integer.parseInt(rosterCostField.getText());
-        SettingsHandler.updateRosterCost(newRosterCost);
+        SettingsHandler.getInstance().updateRosterCost(newRosterCost);
         rosterCostField.setText("");
         AlertBoxController.displayAlert("Roster cost successfully changed!");
     }
@@ -84,31 +78,17 @@ public class AdminController {
         stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);
     }
 
-    private int getRosterPoints(ResultSet roster, List<Game> gamesPlayed) throws SQLException {
+    private int getRosterPoints(Roster roster, List<Game> gamesPlayed) {
         AtomicInteger rosterPoints = new AtomicInteger();
-        int rosterId = roster.getInt("roster_id");
-        Map<Integer, String> positionMap = Map.ofEntries(
-                Map.entry(0, "top"),
-                Map.entry(1, "jungle"),
-                Map.entry(2, "middle"),
-                Map.entry(3, "bottom"),
-                Map.entry(4, "support")
-        );
-        List<String> rosterPlayers = new ArrayList<>();
-        rosterPlayers.add(0, roster.getString(positionMap.get(0)));
-        rosterPlayers.add(1, roster.getString(positionMap.get(1)));
-        rosterPlayers.add(2, roster.getString(positionMap.get(2)));
-        rosterPlayers.add(3, roster.getString(positionMap.get(3)));
-        rosterPlayers.add(4, roster.getString(positionMap.get(4)));
-        Map<String, List<String>> playersItems = new HashMap<>();
-        rosterPlayers.forEach(player ->
-            playersItems.put(player, ChosenItemSetsHandler.getItemsFromPosition(rosterId, positionMap.get(rosterPlayers.indexOf(player)))));
-        for (String nickname : rosterPlayers) {
+        Map<String, String> players = roster.getPlayers();
+        Map<String, List<String>> playersItems = roster.getPlayersItems();
+        for (String position : players.keySet()) {
             for (Game game : gamesPlayed) {
+                String nickname = players.get(position);
                 if (game.hasPlayer(nickname)) {
                     Player player = game.getPlayer(nickname);
                     rosterPoints.addAndGet(player.getPlayerPoints());
-                    List<String> items = playersItems.get(nickname);
+                    List<String> items = playersItems.get(position);
                     items.forEach(item -> {
                         int gathered = ItemsHandler.getItemPointsFromGame(item, nickname, game);
                         rosterPoints.addAndGet(gathered);

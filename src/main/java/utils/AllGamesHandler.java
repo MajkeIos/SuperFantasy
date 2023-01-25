@@ -30,7 +30,7 @@ public class AllGamesHandler {
     }
 
     private void updateGames() {
-        FileHandler.getAllFiles(FileHandler.folderPathname).forEach(folder ->
+        FileHandler.getAllFiles(FileHandler.gamesPathname).forEach(folder ->
             FileHandler.getAllFiles(folder).forEach(file -> {
                 try {
                     games.add(FileHandler.readGameFromFile(file));

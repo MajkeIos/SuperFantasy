@@ -1,6 +1,6 @@
 package utils;
 
-import items.ItemFormula;
+import models.items.Item;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,7 +23,7 @@ public class StatisticsHandler {
         return onePlayerItemRankFromAllGames(ItemsHandler.getCommonItems(), summonerName);
     }
 
-    private static List<Map.Entry<String, Double>> onePlayerItemRankFromAllGames(HashMap<String, ItemFormula> items, String summonerName) {
+    private static List<Map.Entry<String, Double>> onePlayerItemRankFromAllGames(HashMap<String, ? extends Item> items, String summonerName) {
         List<Map.Entry<String, Double>> itemRank = new LinkedList<>();
         items.keySet().forEach(item -> {
             double averagePoints = ItemsHandler.getAverageItemPointsFromAllGames(item, summonerName);

@@ -38,5 +38,4 @@ dependencies {
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.+'
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.+'
     implementation 'org.json:json:20220320'
-    implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.26'
 }

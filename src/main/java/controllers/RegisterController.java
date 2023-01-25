@@ -1,6 +1,5 @@
 package controllers;
 
-import database.tablesHandlers.UsersHandler;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +11,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import utils.UsersHandler;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -28,14 +28,14 @@ public class RegisterController {
     public void register(ActionEvent e) throws IOException {
         if (usernameField.getText().equals("")) {
             AlertBoxController.displayAlert("You haven't chosen username!");
-        } else if (UsersHandler.getUser(usernameField.getText()) != null) {
+        } else if (UsersHandler.getInstance().getUser(usernameField.getText()) != null) {
             AlertBoxController.displayAlert("User " + usernameField.getText() + " already exists!");
         } else if (passwordField.getText().equals("")) {
             AlertBoxController.displayAlert("You haven't chosen password!");
         } else if (!passwordField.getText().equals(confirmPasswordField.getText())) {
             AlertBoxController.displayAlert("Your given passwords don't match");
         }  else {
-            UsersHandler.addUser(usernameField.getText(), passwordField.getText());
+            utils.UsersHandler.getInstance().addUser(usernameField.getText(), passwordField.getText());
             AlertBoxController.displayAlert("You have successfully registered!");
             clearData();
         }

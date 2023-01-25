@@ -1,6 +1,5 @@
 package controllers;
 
-import database.tablesHandlers.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,12 +12,16 @@ import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import models.Roster;
+import models.items.Item;
+import utils.*;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ChooseRosterController implements Initializable {
 
@@ -77,28 +80,26 @@ public class ChooseRosterController implements Initializable {
     private int maxPlayerItemCopies;
     private int minPlayersChosen;
     private final ArrayList<ArrayList<Button>> itemsGrid = new ArrayList<>();
+    private final Map<Integer, String> indexToPosition = new HashMap<>() {{
+       put(0, "top"); put(1, "jungle"); put(2, "middle"); put(3, "bottom"); put(4, "support");
+    }};
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ResultSet resultSet = SettingsHandler.getSettings();
-        try {
-            assert resultSet != null;
-            maxRosterCost = resultSet.getInt("max_roster_cost");
-            maxSameTeamPlayers = resultSet.getInt("max_same_team_players");
-            maxPlayerItemCopies = resultSet.getInt("max_player_item_copies");
-            minPlayersChosen = resultSet.getInt("min_players_chosen");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        SettingsHandler settingsHandler = SettingsHandler.getInstance();
+        maxRosterCost = settingsHandler.getMaxRosterCost();
+        maxSameTeamPlayers = settingsHandler.getMaxSameTeamPlayers();
+        maxPlayerItemCopies = settingsHandler.getMaxPlayerItemCopies();
+        minPlayersChosen = settingsHandler.getMinPlayersChosen();
         rosterCost = 0;
         initChoiceBoxes();
         initItemButtons();
-        ResultSet currentRoster = ChosenRostersHandler.getUserRoster(currentUser);
-        if (currentRoster != null) {
-            initRoster(currentRoster);
+        Roster roster = RostersHandler.getInstance().getRosters().get(currentUser);
+        if (roster != null) {
+            initRoster(roster);
             updateCost();
         }
-        pointsLabel.setText(Objects.requireNonNull(UsersHandler.getUserPoints(currentUser)).toString());
+        pointsLabel.setText(Integer.valueOf(UsersHandler.getInstance().getUser(currentUser).getPoints()).toString());
         costText.setText(rosterCost + " of " + maxRosterCost);
     }
 
@@ -121,11 +122,13 @@ public class ChooseRosterController implements Initializable {
     }
 
     public void saveRoster(ActionEvent e) throws IOException, SQLException {
-        ArrayList<String> chosenPlayers = getChosenPlayers();
-        ArrayList<String> chosenItems = getChosenItems();
+        Map<String, String> chosenPlayers = getChosenPlayers();
+        Map<String, List<String>> chosenItems = getChosenItems();
+        AtomicInteger chosenItemsSize = new AtomicInteger();
+        chosenItems.values().forEach(list -> chosenItemsSize.addAndGet(list.size()));
         if (chosenPlayers.size() < minPlayersChosen) {
             AlertBoxController.displayAlert("You haven't chosen enough players!");
-        } else if (chosenItems.size() <  minPlayersChosen * itemsGrid.get(0).size()){
+        } else if (chosenItemsSize.get() <  minPlayersChosen * itemsGrid.get(0).size()){
             AlertBoxController.displayAlert("You haven't chosen item for every player!");
         } else if (getChosenPlayers().size() < minPlayersChosen) {
             AlertBoxController.displayAlert("You haven't chosen enough players!");
@@ -136,22 +139,17 @@ public class ChooseRosterController implements Initializable {
         } else if (!checkPlayerItemCopies()) {
             AlertBoxController.displayAlert("Your can have only " + maxPlayerItemCopies + " item copies per player!");
         } else {
-            removePreviousRoster();
-            ChosenRostersHandler.addNewRoster(currentUser, chosenPlayers);
-            int rosterId = Objects.requireNonNull(ChosenRostersHandler.getUserRoster(currentUser)).getInt("roster_id");
-            ChosenItemSetsHandler.addNewItemSet(rosterId, chosenItems);
+            RostersHandler.getInstance().removeRoster(currentUser);
+            RostersHandler.getInstance().addRoster(currentUser, new Roster(chosenPlayers, chosenItems));
             AlertBoxController.displayAlert("Roster successfully saved!");
         }
     }
 
     public void updateCost() {
-        ArrayList<String> items = getChosenItems();
-        Map<String, Integer> itemCosts = ItemsHandler.getItemsWithCost();
+        Map<String, List<String>> items = getChosenItems();
+        HashMap<String, ? extends Item> allItems = ItemsHandler.getAllItems();
         rosterCost = 0;
-        items.forEach(item -> {
-            assert itemCosts != null;
-            rosterCost += itemCosts.get(item);
-        });
+        items.values().forEach(itemList -> itemList.forEach(item -> rosterCost += allItems.get(item).getItemCost()));
         costBar.setProgress((double) rosterCost / maxRosterCost);
         costBar.setStyle((rosterCost <= maxRosterCost) ? "-fx-accent: green" : "-fx-accent: red");
         costText.setText(rosterCost + " of " + maxRosterCost);
@@ -196,76 +194,64 @@ public class ChooseRosterController implements Initializable {
         itemsGrid.get(4).add(player5item3Button);
     }
 
-    private void initRoster(ResultSet currentRoster) {
-        try {
-            int rosterId = currentRoster.getInt("roster_id");
-            topChoiceBox.setValue(currentRoster.getString("top"));
-            jungleChoiceBox.setValue(currentRoster.getString("jungle"));
-            middleChoiceBox.setValue(currentRoster.getString("middle"));
-            bottomChoiceBox.setValue(currentRoster.getString("bottom"));
-            supportChoiceBox.setValue(currentRoster.getString("support"));
-            initItemsFromRoster(rosterId);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    private void initRoster(Roster roster) {
+        Map<String, String> players = roster.getPlayers();
+        topChoiceBox.setValue(players.get("top"));
+        jungleChoiceBox.setValue(players.get("jungle"));
+        middleChoiceBox.setValue(players.get("middle"));
+        bottomChoiceBox.setValue(players.get("bottom"));
+        supportChoiceBox.setValue(players.get("support"));
+        initItemsFromRoster(roster.getPlayersItems());
     }
 
-    private void initItemsFromRoster(int rosterId) {
-        ResultSet currentItemSet = ChosenItemSetsHandler.getItemSet(rosterId);
-        try {
-            assert currentItemSet != null;
-            player1item1Button.setText(currentItemSet.getString("top_item_1"));
-            player1item2Button.setText(currentItemSet.getString("top_item_2"));
-            player1item3Button.setText(currentItemSet.getString("top_item_3"));
-            player2item1Button.setText(currentItemSet.getString("jungle_item_1"));
-            player2item2Button.setText(currentItemSet.getString("jungle_item_2"));
-            player2item3Button.setText(currentItemSet.getString("jungle_item_3"));
-            player3item1Button.setText(currentItemSet.getString("middle_item_1"));
-            player3item2Button.setText(currentItemSet.getString("middle_item_2"));
-            player3item3Button.setText(currentItemSet.getString("middle_item_3"));
-            player4item1Button.setText(currentItemSet.getString("bottom_item_1"));
-            player4item2Button.setText(currentItemSet.getString("bottom_item_2"));
-            player4item3Button.setText(currentItemSet.getString("bottom_item_3"));
-            player5item1Button.setText(currentItemSet.getString("support_item_1"));
-            player5item2Button.setText(currentItemSet.getString("support_item_2"));
-            player5item3Button.setText(currentItemSet.getString("support_item_3"));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private ArrayList<String> getChosenItems() {
-        ArrayList<String> items = new ArrayList<>();
-        itemsGrid.forEach(buttons -> buttons.forEach(button -> {
-            if (!Objects.equals(button.getText(), "Choose item")) {
-                items.add(button.getText());
+    private void initItemsFromRoster(Map<String, List<String>> items) {
+        for (int i = 0; i < itemsGrid.size(); i++) {
+            List<String> itemsOnPosition = items.get(indexToPosition.get(i));
+            for (int j = 0; j < itemsGrid.get(i).size(); j++) {
+                Button currentButton = itemsGrid.get(i).get(j);
+                currentButton.setText(itemsOnPosition.get(j));
             }
-        }));
+        }
+    }
+
+    private Map<String, List<String>> getChosenItems() {
+        Map<String, List<String>> items = new HashMap<>();
+        for (int i = 0; i < itemsGrid.size(); i++) {
+            items.put(indexToPosition.get(i), new ArrayList<>());
+            for (Button button : itemsGrid.get(i)) {
+                if (!Objects.equals(button.getText(), "Choose item")) {
+                    items.get(indexToPosition.get(i)).add(button.getText());
+                }
+            }
+        }
         return items;
     }
 
-    private ArrayList<String> getChosenPlayers() {
-        ArrayList<String> chosenPlayers = new ArrayList<>();
-        if (topChoiceBox.getValue() != null) chosenPlayers.add(topChoiceBox.getValue());
-        if (jungleChoiceBox.getValue() != null) chosenPlayers.add(jungleChoiceBox.getValue());
-        if (middleChoiceBox.getValue() != null) chosenPlayers.add(middleChoiceBox.getValue());
-        if (bottomChoiceBox.getValue() != null) chosenPlayers.add(bottomChoiceBox.getValue());
-        if (supportChoiceBox.getValue() != null) chosenPlayers.add(supportChoiceBox.getValue());
+    private Map<String, String> getChosenPlayers() {
+        Map<String, String> chosenPlayers = new HashMap<>();
+        if (topChoiceBox.getValue() != null) chosenPlayers.put("top", topChoiceBox.getValue());
+        if (jungleChoiceBox.getValue() != null) chosenPlayers.put("jungle", jungleChoiceBox.getValue());
+        if (middleChoiceBox.getValue() != null) chosenPlayers.put("middle", middleChoiceBox.getValue());
+        if (bottomChoiceBox.getValue() != null) chosenPlayers.put("bottom", bottomChoiceBox.getValue());
+        if (supportChoiceBox.getValue() != null) chosenPlayers.put("support", supportChoiceBox.getValue());
         return chosenPlayers;
     }
 
-    private boolean checkSameTeamPlayers(ArrayList<String> chosenPlayers) {
+    private boolean checkSameTeamPlayers(Map<String, String> chosenPlayers) {
         Map<String, Integer> playersPerTeam = new HashMap<>();
-        for (String player : chosenPlayers) {
+        AtomicBoolean goodTeam = new AtomicBoolean(true);
+        chosenPlayers.values().forEach(player -> {
             String team = player.substring(0, player.indexOf(" "));
             if (playersPerTeam.containsKey(team)) {
                 playersPerTeam.put(team, playersPerTeam.get(team) + 1);
-                if (playersPerTeam.get(team) > maxSameTeamPlayers) return false;
+                if (playersPerTeam.get(team) > maxSameTeamPlayers) {
+                    goodTeam.set(false);
+                }
             } else {
                 playersPerTeam.put(team, 1);
             }
-        }
-        return true;
+        });
+        return goodTeam.get();
     }
 
     private boolean checkPlayerItemCopies() {
@@ -284,18 +270,6 @@ public class ChooseRosterController implements Initializable {
             }
         }
         return true;
-    }
-
-    private void removePreviousRoster() {
-        ResultSet previousRoster = ChosenRostersHandler.getUserRoster(currentUser);
-        if (previousRoster == null) return;
-        try {
-            int rosterId = previousRoster.getInt("roster_id");
-            ChosenItemSetsHandler.removeItemSet(rosterId);
-            ChosenRostersHandler.removeRoster(rosterId);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private void loadScene(ActionEvent e) {

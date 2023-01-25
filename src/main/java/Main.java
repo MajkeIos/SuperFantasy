@@ -1,4 +1,3 @@
-import database.DatabaseConnection;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -9,12 +8,11 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-import java.sql.SQLException;
 import java.util.Objects;
 
 public class Main extends Application {
 
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) {
         launch(args);
     }
 
@@ -29,11 +27,6 @@ public class Main extends Application {
             quitAlert.setTitle("Logout");
             quitAlert.setHeaderText("Are you sure you want to quit?");
             if (quitAlert.showAndWait().get() == ButtonType.OK) {
-                try {
-                    DatabaseConnection.disconnect();
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
                 primaryStage.close();
             } else {
                 e.consume();

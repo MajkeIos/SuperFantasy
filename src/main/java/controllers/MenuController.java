@@ -1,6 +1,5 @@
 package controllers;
 
-import database.DatabaseConnection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -42,7 +41,6 @@ public class MenuController {
 
         if (quitAlert.showAndWait().get() == ButtonType.OK) {
             Stage stage = (Stage) scenePane.getScene().getWindow();
-            DatabaseConnection.disconnect();
             stage.close();
         }
     }

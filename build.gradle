@@ -14,6 +14,7 @@ application {
 }
 
 sourceCompatibility = 17
+targetCompatibility = 17
 
 repositories {
     mavenCentral()
@@ -35,7 +36,5 @@ javafx {
 
 
 dependencies {
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.+'
-    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.+'
     implementation 'org.json:json:20220320'
 }
